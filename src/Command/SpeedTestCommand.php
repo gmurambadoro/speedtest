@@ -20,7 +20,7 @@ use Symfony\Component\Process\Process;
 
 class SpeedTestCommand extends Command
 {
-    protected static $defaultName = 'app:speed-test';
+    protected static $defaultName = 'app:speedtest';
 
     private EntityManagerInterface $entityManager;
 
@@ -41,7 +41,7 @@ class SpeedTestCommand extends Command
     {
         $this
             ->setDescription('Add a short description for your command')
-            ->addOption('save', 'N', InputOption::VALUE_NONE, 'Save the results to the database')
+            ->addOption('save', 'S', InputOption::VALUE_NONE, 'Save the results to the database')
         ;
     }
 
