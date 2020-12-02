@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Server;
+use App\Entity\ServiceProvider;
 use App\Entity\SpeedTest;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -30,6 +31,7 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToCrud('Service Providers', 'fas fa-desktop', ServiceProvider::class);
         yield MenuItem::linkToCrud('Servers', 'fas fa-desktop', Server::class);
         yield MenuItem::linkToCrud('Speed Tests', 'fas fa-download', SpeedTest::class);
         yield MenuItem::linkToCrud('Users', 'fas fa-users', User::class);

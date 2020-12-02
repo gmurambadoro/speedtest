@@ -9,7 +9,6 @@ use App\Repository\ServerRepository;
 use App\Repository\ServiceProviderRepository;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
-use League\Csv\Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,8 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use Symfony\Component\String\AbstractString;
-use function Symfony\Component\String\u;
 
 class SpeedTestCommand extends Command
 {
