@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Server;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +20,22 @@ class ServerRepository extends ServiceEntityRepository
         parent::__construct($registry, Server::class);
     }
 
-    // /**
-    //  * @return Server[] Returns an array of Server objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Retrieves Server information
+     * @param int $serverId
+     * @return Server|null
+     */
+    public function findServerByServerId(int $serverId): ?Server
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        try {
+            return $this->createQueryBuilder('e')
+                ->where('e.serverId = :serverId')
+                ->setParameter('serverId', $serverId)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+        }
 
-    /*
-    public function findOneBySomeField($value): ?Server
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return null;
     }
-    */
 }

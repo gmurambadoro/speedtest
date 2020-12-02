@@ -24,13 +24,13 @@ class SpeedTest
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Server::class)
+     * @ORM\ManyToOne(targetEntity=Server::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $server;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetimetz_immutable")
      */
     private $timestamp;
 
@@ -81,15 +81,21 @@ class SpeedTest
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getTimestamp(): ?\DateTimeImmutable
     {
         return $this->timestamp;
     }
 
-    public function setTimestamp(\DateTimeImmutable $timestamp): self
+    /**
+     * @param mixed $timestamp
+     * @return SpeedTest
+     */
+    public function setTimestamp(?\DateTimeImmutable $timestamp)
     {
         $this->timestamp = $timestamp;
-
         return $this;
     }
 
