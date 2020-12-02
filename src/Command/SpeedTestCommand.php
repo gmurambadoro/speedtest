@@ -101,11 +101,11 @@ class SpeedTestCommand extends Command
                     ->setServer($server)
                     // 2020-12-02T11:19:12.834113Z
                     ->setTimestamp(Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $record['Timestamp'])->toDateTimeImmutable())
-                    ->setDistance(floatval($record['Distance']))
-                    ->setPing(floatval($record['Ping']))
-                    ->setDownloadSpeed(floatval($record['Download']))
-                    ->setUploadSpeed(floatval($record['Upload']))
-                    ->setShare((string)$record['Share'])
+                    ->setDistance($record['Distance'])
+                    ->setPing($record['Ping'])
+                    ->setDownloadSpeed($record['Download'])
+                    ->setUploadSpeed($record['Upload'])
+                    ->setShare($record['Share'])
                     ->setIpAddress($record['IP Address']);
 
                 $this->entityManager->persist($speedTest);

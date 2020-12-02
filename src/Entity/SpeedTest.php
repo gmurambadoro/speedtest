@@ -35,22 +35,22 @@ class SpeedTest
     private $timestamp;
 
     /**
-     * @ORM\Column(type="decimal", precision=15, scale=15)
+     * @ORM\Column(type="string", length=100)
      */
     private $distance;
 
     /**
-     * @ORM\Column(type="decimal", precision=15, scale=15)
+     * @ORM\Column(type="string", length=100)
      */
     private $ping;
 
     /**
-     * @ORM\Column(type="decimal", precision=15, scale=15)
+     * @ORM\Column(type="string", length=100)
      */
     private $downloadSpeed;
 
     /**
-     * @ORM\Column(type="decimal", precision=15, scale=15)
+     * @ORM\Column(type="string", length=100)
      */
     private $uploadSpeed;
 
