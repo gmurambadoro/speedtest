@@ -8,7 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ServerRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"},
+ *     shortName="Server"
+ * )
  */
 class Server
 {
