@@ -3,8 +3,10 @@
 namespace App\Command;
 
 use App\Entity\Server;
+use App\Entity\ServiceProvider;
 use App\Entity\SpeedTest;
 use App\Repository\ServerRepository;
+use App\Repository\ServiceProviderRepository;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Reader;
@@ -27,12 +29,15 @@ class SpeedTestCommand extends Command
 
     private ServerRepository $serverRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, ServerRepository $serverRepository, string $name = null)
+    private ServiceProviderRepository $serviceProviderRepository;
+
+    public function __construct(EntityManagerInterface $entityManager, ServerRepository $serverRepository, ServiceProviderRepository $serviceProviderRepository, string $name = null)
     {
         parent::__construct($name);
 
         $this->entityManager = $entityManager;
         $this->serverRepository = $serverRepository;
+        $this->serviceProviderRepository = $serviceProviderRepository;
     }
 
     protected function configure()
@@ -58,62 +63,90 @@ class SpeedTestCommand extends Command
 
             $process->clearOutput();
 
-            $process = new Process(['speedtest', '--csv-header']);
+            $process = new Process(['speedtest', '--json']);
             $process->mustRun();
 
-            $header = array_map(
-                fn(AbstractString $s) => $s->trim()->toString(),
-                u($process->getOutput())->trim()->split(',')
-            );
+            $data = json_decode($process->getOutput(), true);
 
-            $process = new Process(['speedtest', '--csv']);
-            $process->mustRun();
-
-            $table = (new Table($output))
-                ->setHeaders($header); // we will display the results to the console in table format.
-
-            $reader = Reader::createFromString($process->getOutput());
-
-            foreach ($reader->getRecords($header) as $record) {
-                $table->addRow(array_values($record));
-
-                if (!$save) {
-                    continue;
-                }
-
-                if (empty($record['Server ID'] ?? 0)) {
-                    $io->warning('`Server ID` field is missing from result => ' . json_encode($record));
-                    continue;
-                }
-
-                $server = $this->serverRepository->findServerByServerId($record['Server ID']);
-
-                if (!$server instanceof Server) {
-                    $server = (new Server())
-                        ->setServerId(intval($record['Server ID']))
-                        ->setSponsor($record['Sponsor'])
-                        ->setServerName($record['Server Name']);
-
-                    $this->entityManager->persist($server);
-                }
-
-                $speedTest = (new SpeedTest())
-                    ->setServer($server)
-                    // 2020-12-02T11:19:12.834113Z
-                    ->setTimestamp(Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $record['Timestamp'])->toDateTimeImmutable())
-                    ->setDistance($record['Distance'])
-                    ->setPing($record['Ping'])
-                    ->setDownloadSpeed($record['Download'])
-                    ->setUploadSpeed($record['Upload'])
-                    ->setShare($record['Share'])
-                    ->setIpAddress($record['IP Address']);
-
-                $this->entityManager->persist($speedTest);
-
-                $this->entityManager->flush();
+            if (empty($data)) {
+                throw new \RuntimeException(sprintf('Unexpected response obtained from server: %s', $process->getOutput()));
             }
 
+            $table = new Table($output);
+
+            $table->setHeaderTitle('SPEEDTEST CLI');
+
+            $table->setHeaders([
+                'Timestamp', 'ISP', 'IP', 'Server', 'Sponsor', 'Bytes Sent', 'Download',
+                'Upload', 'Bytes Received', 'Ping', 'Share',
+            ]);
+
+            $table->addRow([
+                $data['timestamp'],
+                $data['client']['isp'],
+                $data['client']['ip'],
+                $data['server']['name'],
+                $data['server']['sponsor'],
+                $data['bytes_sent'],
+                $data['download'],
+                $data['upload'],
+                $data['bytes_received'],
+                $data['ping'],
+                $data['share'],
+            ]);
+
             $table->render();
+
+            if (!$save) {
+                return Command::SUCCESS;
+            }
+
+            // get server
+            $server = $this->serverRepository->findServerByServerId($data['server']['id']);
+
+            if (!$server instanceof Server) {
+                $server = (new Server())
+                    ->setServerName($data['server']['name'])
+                    ->setSponsor($data['server']['sponsor'])
+                    ->setServerId($data['server']['id']);
+
+                $this->entityManager->persist($server);
+            }
+
+            // get isp
+            $serviceProvider = $this->serviceProviderRepository->findOneByIp($data['client']['ip']);
+
+            if (!$serviceProvider instanceof ServiceProvider) {
+                $serviceProvider = (new ServiceProvider())
+                    ->setIpAddress($data['client']['ip'])
+                    ->setCountry($data['client']['country'])
+                    ->setIsp($data['client']['isp'])
+                    ->setIspRating($data['client']['isprating'])
+                    ->setIspulavg($data['client']['ispulavg'])
+                    ->setLatitude($data['client']['lat'])
+                    ->setLoggedin($data['client']['loggedin'])
+                    ->setLongitude($data['client']['lon'])
+                    ->setRating($data['client']['rating'])
+                ;
+
+                $this->entityManager->persist($serviceProvider);
+            }
+
+            // add speedtest record
+            $speedTest = (new SpeedTest())
+                ->setServer($server)
+                ->setServiceProvider($serviceProvider)
+                ->setShare((string)$data['share'])
+                ->setPing($data['ping'])
+                ->setTimestamp(Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $data['timestamp'])->toDateTimeImmutable())
+                ->setBytesReceived($data['bytes_received'])
+                ->setBytesSent($data['bytes_sent'])
+                ->setDownload($data['download'])
+                ->setUpload($data['upload'])
+            ;
+
+            $this->entityManager->persist($speedTest);
+            $this->entityManager->flush();
 
             return Command::SUCCESS;
         } catch (ProcessFailedException $exception) {

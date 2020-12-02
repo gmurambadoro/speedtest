@@ -27,42 +27,48 @@ class SpeedTest
      * @ORM\ManyToOne(targetEntity=Server::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $server;
+    private ?Server $server;
 
     /**
      * @ORM\Column(type="datetimetz_immutable")
      */
-    private $timestamp;
+    private \DateTimeInterface $timestamp;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $bytesSent = 0;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $distance;
+    private string $download;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private ?string $share;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $bytesReceived = 0;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private float $ping = 0;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $ping;
+    private ?string $upload;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\ManyToOne(targetEntity=ServiceProvider::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $downloadSpeed;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $uploadSpeed;
-
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
-    private $share;
-
-    /**
-     * @ORM\Column(type="string", length=16)
-     */
-    private $ipAddress;
+    private ?ServiceProvider $serviceProvider;
 
     public function getId(): ?int
     {
@@ -99,50 +105,26 @@ class SpeedTest
         return $this;
     }
 
-    public function getDistance(): ?string
+    public function getBytesSent(): ?int
     {
-        return $this->distance;
+        return $this->bytesSent ?? 0;
     }
 
-    public function setDistance(string $distance): self
+    public function setBytesSent(int $bytesSent): self
     {
-        $this->distance = $distance;
+        $this->bytesSent = $bytesSent;
 
         return $this;
     }
 
-    public function getPing(): ?string
+    public function getDownload(): ?string
     {
-        return $this->ping;
+        return $this->download;
     }
 
-    public function setPing(string $ping): self
+    public function setDownload(string $download): self
     {
-        $this->ping = $ping;
-
-        return $this;
-    }
-
-    public function getDownloadSpeed(): ?string
-    {
-        return $this->downloadSpeed;
-    }
-
-    public function setDownloadSpeed(string $downloadSpeed): self
-    {
-        $this->downloadSpeed = $downloadSpeed;
-
-        return $this;
-    }
-
-    public function getUploadSpeed(): ?string
-    {
-        return $this->uploadSpeed;
-    }
-
-    public function setUploadSpeed(string $uploadSpeed): self
-    {
-        $this->uploadSpeed = $uploadSpeed;
+        $this->download = $download;
 
         return $this;
     }
@@ -159,15 +141,52 @@ class SpeedTest
         return $this;
     }
 
-    public function getIpAddress(): ?string
+    public function getBytesReceived(): int
     {
-        return $this->ipAddress;
+        return $this->bytesReceived ?? 0;
     }
 
-    public function setIpAddress(string $ipAddress): self
+    public function setBytesReceived(int $bytesReceived): self
     {
-        $this->ipAddress = $ipAddress;
+        $this->bytesReceived = $bytesReceived;
 
         return $this;
     }
+
+    public function getPing(): ?float
+    {
+        return $this->ping;
+    }
+
+    public function setPing(float $ping): self
+    {
+        $this->ping = $ping;
+
+        return $this;
+    }
+
+    public function getUpload(): ?string
+    {
+        return $this->upload;
+    }
+
+    public function setUpload(string $upload): self
+    {
+        $this->upload = $upload;
+
+        return $this;
+    }
+
+    public function getServiceProvider(): ?ServiceProvider
+    {
+        return $this->serviceProvider;
+    }
+
+    public function setServiceProvider(?ServiceProvider $serviceProvider): self
+    {
+        $this->serviceProvider = $serviceProvider;
+
+        return $this;
+    }
+
 }
