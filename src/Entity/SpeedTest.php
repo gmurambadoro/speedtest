@@ -11,7 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
- *     shortName="Speed-Test"
+ *     shortName="Speed-Test",
+ *     order={"timestamp"="DESC"}
  * )
  */
 class SpeedTest
