@@ -14,14 +14,4 @@ class ServerCrudController extends AbstractCrudController
     {
         return Server::class;
     }
-
-    public function configureActions(Actions $actions): Actions
-    {
-        return parent::configureActions($actions)
-            ->remove(Crud::PAGE_INDEX, Action::NEW)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
-            ->add(Crud::PAGE_INDEX, Action::DETAIL)
-        ;
-    }
 }

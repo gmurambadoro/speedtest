@@ -30,9 +30,9 @@ class SpeedTest
     private ?Server $server;
 
     /**
-     * @ORM\Column(type="datetimetz_immutable")
+     * @ORM\Column(type="datetime")
      */
-    private \DateTimeInterface $timestamp;
+    private ?\DateTimeInterface $timestamp;
 
     /**
      * @ORM\Column(type="integer")
@@ -90,16 +90,16 @@ class SpeedTest
     /**
      * @return mixed
      */
-    public function getTimestamp(): ?\DateTimeImmutable
+    public function getTimestamp(): ?\DateTimeInterface
     {
         return $this->timestamp;
     }
 
     /**
-     * @param mixed $timestamp
+     * @param \DateTimeInterface|null $timestamp
      * @return SpeedTest
      */
-    public function setTimestamp(?\DateTimeImmutable $timestamp)
+    public function setTimestamp(?\DateTimeInterface $timestamp)
     {
         $this->timestamp = $timestamp;
         return $this;
