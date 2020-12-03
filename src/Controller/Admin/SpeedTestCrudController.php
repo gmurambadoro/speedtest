@@ -47,7 +47,7 @@ class SpeedTestCrudController extends AbstractCrudController
             }),
             NumberField::new('bytesSent', 'Sent')->formatValue(fn($value, SpeedTest $speedTest) => $this->helper->humanSize($speedTest->getBytesSent(), 1)),
             NumberField::new('bytesReceived', 'Received')->formatValue(fn($value, SpeedTest $speedTest) => $this->helper->humanSize($speedTest->getBytesReceived(), 1)),
-            NumberField::new('ping')->formatValue(fn($value, SpeedTest $speedTest) => $speedTest->getPing() . ' ms'),
+            NumberField::new('ping')->formatValue(fn($value, SpeedTest $speedTest) => number_format($speedTest->getPing(), 1) . ' ms'),
         ];
     }
 }
