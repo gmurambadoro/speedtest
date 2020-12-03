@@ -49,7 +49,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Speeds', 'fas fa-tachometer-alt', SpeedTest::class);
         yield MenuItem::linkToCrud('Servers', 'fas fa-server', Server::class);
-        yield MenuItem::linkToCrud('ISP List', 'fas fa-wifi', ServiceProvider::class);
+        yield MenuItem::linkToCrud('IS Providers', 'fas fa-wifi', ServiceProvider::class);
         yield MenuItem::linkToCrud('Users', 'fas fa-users', User::class);
     }
 }
