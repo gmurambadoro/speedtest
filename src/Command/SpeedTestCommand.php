@@ -70,7 +70,7 @@ class SpeedTestCommand extends Command
             }
 
             $table = new Table($output);
-
+            $table->setStyle('borderless');
             $table->setHeaderTitle('SPEEDTEST CLI');
 
             $table->setHeaders([
@@ -135,7 +135,11 @@ class SpeedTestCommand extends Command
                 ->setServiceProvider($serviceProvider)
                 ->setShare((string)$data['share'])
                 ->setPing($data['ping'])
-                ->setTimestamp(Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $data['timestamp'])->toDateTimeImmutable())
+                ->setTimestamp(
+                    Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $data['timestamp'])
+                        ->addHours(2) // todo: add timezone offset in settings
+                        ->toDateTimeImmutable()
+                )
                 ->setBytesReceived($data['bytes_received'])
                 ->setBytesSent($data['bytes_sent'])
                 ->setDownload($data['download'])
