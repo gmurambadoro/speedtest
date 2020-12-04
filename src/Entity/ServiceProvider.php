@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
- *     shortName="Service-Provider",
+ *     shortName="Internet-Service-Provider",
  * )
  */
 class ServiceProvider
