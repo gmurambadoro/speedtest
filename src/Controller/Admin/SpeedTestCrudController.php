@@ -29,6 +29,7 @@ class SpeedTestCrudController extends AbstractCrudController
     {
         return parent::configureCrud($crud)
             ->setDefaultSort(['timestamp' => 'DESC'])
+            ->setPageTitle(Crud::PAGE_INDEX, '<i class="fas fa-tachometer"></i> Speeds')
         ;
     }
 

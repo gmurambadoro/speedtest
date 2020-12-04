@@ -14,4 +14,10 @@ class ServerCrudController extends AbstractCrudController
     {
         return Server::class;
     }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return parent::configureCrud($crud)
+            ->setPageTitle(Crud::PAGE_INDEX, '<i class="fas fa-server"></i> Servers');
+    }
 }

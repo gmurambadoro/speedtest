@@ -20,7 +20,7 @@ class UserCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
-            ->setPageTitle(Crud::PAGE_INDEX, 'User Listing');
+            ->setPageTitle(Crud::PAGE_INDEX, '<i class="fas fa-users"></i> Users');
     }
 
     public function configureActions(Actions $actions): Actions

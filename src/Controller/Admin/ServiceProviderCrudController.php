@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\ServiceProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class ServiceProviderCrudController extends AbstractCrudController
@@ -12,14 +13,9 @@ class ServiceProviderCrudController extends AbstractCrudController
         return ServiceProvider::class;
     }
 
-    /*
-    public function configureFields(string $pageName): iterable
+    public function configureCrud(Crud $crud): Crud
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        return parent::configureCrud($crud)
+            ->setPageTitle(Crud::PAGE_INDEX, '<i class="fas fa-wifi"></i> IS Providers');
     }
-    */
 }
